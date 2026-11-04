@@ -1,5 +1,9 @@
 name: Build APK
-on: [workflow_dispatch, push]
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - "README.md"
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -11,11 +15,23 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libffi-dev libssl-dev libltdl-dev build-essential ccache
+          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf automake libtool libltdl-dev pkg-config zlib1g-dev libncurses5-dev libffi-dev libssl-dev build-essential ccache cmake
           pip install buildozer "cython==0.29.36" virtualenv
       - name: Build
-        run: buildozer -v android debug
+        id: build
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          buildozer -v android debug 2>&1 | tee build.log
+      - name: Show error on summary page
+        if: steps.build.outcome == 'failure'
+        run: |
+          echo "### Loi build - 60 dong cuoi" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          tail -n 60 build.log | cut -c1-300 >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit 1
       - uses: actions/upload-artifact@v4
         with:
-          name: apk
+          name: pyterm-apk
           path: bin/*.apk
