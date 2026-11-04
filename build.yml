@@ -11,8 +11,8 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libffi-dev libssl-dev
-          pip install buildozer cython
+          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libffi-dev libssl-dev libltdl-dev build-essential ccache
+          pip install buildozer "cython==0.29.36" virtualenv
       - name: Build
         run: buildozer -v android debug
       - uses: actions/upload-artifact@v4

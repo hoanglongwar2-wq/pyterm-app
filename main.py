@@ -578,7 +578,7 @@ class LibsTab(BoxLayout):
         row = BoxLayout(size_hint_y=None, height=96, spacing=4)
         self.entry = TextInput(hint_text="vd: humanize, rich==13.7.1",
                                multiline=False, size_hint_x=0.55, write_tab=False)
-      self.entry.bind(on_text_validate=self.do_install)
+        self.entry.bind(on_text_validate=self.do_install)
         row.add_widget(self.entry)
         row.add_widget(Button(text="CAI", size_hint_x=0.2, on_release=self.do_install))
         row.add_widget(Button(text="GO", size_hint_x=0.25, on_release=self.do_remove))
